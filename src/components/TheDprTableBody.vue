@@ -4,19 +4,23 @@ table.dpr__table
     tr
       th.dpr__th(v-for="(day, inx) in weekdays" :key="inx") {{day}}
   tbody
-    tr(v-for="week in fullDaysForCurrentDataDatePickerInMatrix" )
-      td.dpr__td(v-for="day in week" :class="{'isToday': day.stamp === today}") {{day.day}}.{{day.month}}.{{day.year}}
+    tr(v-for="week in fullDaysForCurrentDataDatePickerInMatrix")
+      dpr-td(v-for="day in week" :key="day.stamp" :dayData="day" :currentDate="currentDate"  @changeDay="changeDay")
 </template>
 
 <script>
-import dateWorker from "@/mixins/dateWorker";
+import dateWorker from "@/mixins/dateWorker"
+import DprTd from "@/components/DprTd"
 
 export default {
   name: "TheDprTableBody",
+  emits: ["changeCurrentDate"],
   mixins: [dateWorker],
+  components: {DprTd},
   created() {
     this.updateCurrentDay()
-  },
+   },
+  inject: ["mainOptions"],
   props: {
     outerCurrentDayTimeStamp: {
       type: Number,
@@ -25,30 +29,29 @@ export default {
   data() {
     return {
       millisecondsInDay: 86400000,
-      weekdays: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'],
       numberDayInCurrenMonth: [],
       currentDayTimeStamp: null,
-      today: this.getToday(),
       currentDate: {
         day: null,
         month: null,
         year: null,
-        numberDay: null
+        numberDay: null,
+        stamp: null
       }
     }
   },
   methods: {
-    getFirstDayMonth(dataMonth) {
-      return dataMonth[0]
-    },
-    getLastDayMonth(dataMonth) {
-      return dataMonth[dataMonth.length - 1]
-    },
     updateCurrentDay() {
-      this.currentDayTimeStamp = parseInt(this.outerCurrentDayTimeStamp)
-      this.currentDate.day = this.getDateInTimeStamp(this.currentDayTimeStamp).day
-      this.currentDate.month = this.getDateInTimeStamp(this.currentDayTimeStamp).month
-      this.currentDate.year = this.getDateInTimeStamp(this.currentDayTimeStamp).year
+      this.currentDayTimeStamp = this.outerCurrentDayTimeStamp
+      let currentDayData = this.getDateInTimeStamp(this.currentDayTimeStamp)
+      this.currentDate.day = currentDayData.day
+      this.currentDate.month = currentDayData.month
+      this.currentDate.year = currentDayData.year
+      this.currentDate.numberDay = currentDayData.numberDay
+      this.currentDate.stamp = currentDayData.stamp
+    },
+    changeDay(day) {
+      this.$emit("changeCurrentDate", day.stamp)
     }
   },
   watch: {
@@ -58,7 +61,14 @@ export default {
   },
   computed: {
     /**
-     *
+     * Список названий дней недели
+     * @returns {*}
+     */
+    weekdays() {
+      return this.mainOptions.weekdays
+    },
+    /**
+     *  Получаем timestamp первого дня месяца
      * @returns {number}
      */
     firstDayCurrentMonthTimeStamp() {
@@ -67,12 +77,16 @@ export default {
     },
 
     /**
-     *
+     * Получаем нужный объект даты из первого дня месяца
      * @returns {{month: number, numberDay: number, year: number, day: number}}
      */
     firstDayCurrentMonth() {
       return this.getDateInTimeStamp(this.firstDayCurrentMonthTimeStamp)
     },
+    /**
+     * Собираем массив данных со всеми днями текущего месяца
+     * @returns {[]}
+     */
     fullDaysInCurrentMonth() {
 
       let days = []
@@ -90,9 +104,12 @@ export default {
           days.push(this.getDateInTimeStamp(newDayTimeStamp))
         }
       }
-
       return days
     },
+    /**
+     * Добавляем для всех дней месяца дни из соседних месяцев чтобы заполнить всю таблицу от понедельника до воскресенья
+     * @returns {[]}
+     */
     fullDaysForCurrentDataDatePicker() {
       let dataDays = this.fullDaysInCurrentMonth
       let startArrayIsReady = false
@@ -119,20 +136,20 @@ export default {
     },
     /**
      * Добавляем ведущий 0 для дней и месяцев < 10
-     * @returns {*[]}
+     * @returns {[]}
      */
     daysAfterUpdateNumberInMonth() {
       return this.fullDaysForCurrentDataDatePicker.map(day => {
         day.month++
-        if (day.month < 10 ) {
-          day.month = `0${day.month}`
-        }
-        if (day.day < 10 ) {
-          day.day = `0${day.day}`
-        }
+        day.month = this.addLeadingZeroForNumber(day.month)
+        day.day = this.addLeadingZeroForNumber(day.day)
         return day
       })
     },
+    /**
+     * Преобразуем полученный массив в матрицу по неделям
+     * @returns {[{}]}
+     */
     fullDaysForCurrentDataDatePickerInMatrix() {
       let daysInMatrix = [];
       let daysInArray = this.daysAfterUpdateNumberInMonth
@@ -142,7 +159,6 @@ export default {
       return daysInMatrix
     },
   }
-
 }
 </script>
 
@@ -150,18 +166,7 @@ export default {
 .dpr
   &__table
     border-collapse collapse
-    width 100%
   &__th
     padding 5px 10px
     border 1px solid black
-  &__td
-    padding 5px
-    border 1px solid black
-    height 30px
-    cursor pointer
-    &.isToday
-      background-color rgba(100, 149, 237, 0.47)
-    &:hover:not(.isToday)
-      background-color antiquewhite
-
 </style>
