@@ -10,7 +10,7 @@ table.dpr__table
 
 <script>
 import dateWorker from "@/mixins/dateWorker"
-import DprTd from "@/components/DprTd"
+import DprTd from "@/components/dataPicker/DprTd"
 
 export default {
   name: "TheDprTableBody",

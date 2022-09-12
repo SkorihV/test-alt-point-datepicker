@@ -6,7 +6,7 @@ div.dpr__change-block-wrapper
 </template>
 
 <script>
-import DprControlPanelSelect from "@/components/DprControlPanelSelect"
+import DprControlPanelSelect from "@/components/dataPicker/DprControlPanelSelect"
 import dateWorker from "@/mixins/dateWorker"
 
 export default {

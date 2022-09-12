@@ -1,14 +1,18 @@
 <template lang="pug">
 main.wrapper
+  the-header
   the-dpr-main
+  router-view
 </template>
 
 <script>
-import TheDprMain from "@/components/TheDprMain";
+import TheDprMain from "@/components/dataPicker/TheDprMain";
+import TheHeader from "@/components/mainTemplates/TheHeader";
 
 export default {
   name: 'App',
   components: {
+    TheHeader,
     TheDprMain
   }
 }
@@ -31,6 +35,5 @@ main
     min-height 100vh
     width 980px
     margin 0 auto
-
 
 </style>

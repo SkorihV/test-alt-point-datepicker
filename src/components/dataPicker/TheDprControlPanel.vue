@@ -10,8 +10,8 @@
 
 <script>
 import dateWorker from "@/mixins/dateWorker"
-import TheDprControlPanelChangeBlock from "@/components/TheDprControlPanelChangeBlock"
-import DprControlPanelInput from "@/components/DprControlPanelInput"
+import TheDprControlPanelChangeBlock from "@/components/dataPicker/TheDprControlPanelChangeBlock"
+import DprControlPanelInput from "@/components/dataPicker/DprControlPanelInput"
 
 export default {
   name: "TheDprControlPanel",

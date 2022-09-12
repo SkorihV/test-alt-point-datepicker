@@ -56,4 +56,5 @@ export default {
     border none
     background-color #e8e5e5
     height 100%
+    width 150px
 </style>

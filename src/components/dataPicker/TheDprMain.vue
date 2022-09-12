@@ -7,8 +7,8 @@ div.dpr.dpr__main-wrapper
 </template>
 
 <script>
-import TheDprTableBody from "@/components/TheDprTableBody"
-import TheDprControlPanel from "@/components/TheDprControlPanel";
+import TheDprTableBody from "@/components/dataPicker/TheDprTableBody"
+import TheDprControlPanel from "@/components/dataPicker/TheDprControlPanel";
 import dateWorker from "@/mixins/dateWorker";
 
 export default {
@@ -27,8 +27,8 @@ export default {
   provide() {
     return {
       mainOptions:  {
-        isShowMonth: false, //показывать месяца в ячейках
-        isShowYears: false, //показывать годы в ячейках
+        isShowMonth: true, //показывать месяца в ячейках
+        isShowYears: true, //показывать годы в ячейках
         isNameMonth: true, //в селекте показывать месяц названием или числом
         weekdays: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'], // заголовки дней недели
         monthNames: ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"], // названия месяцев в селекте
